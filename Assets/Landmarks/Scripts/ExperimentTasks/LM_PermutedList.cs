@@ -24,10 +24,10 @@ public class LM_PermutedList : ExperimentTask
     public ObjectList listToPermute;
     public int subset = 3;
     public bool shuffle = true;
+    [Tooltip("Sort such that the last item of n-1 is the first item of n")] public bool link = false;
+    private static bool linked = false;
     public EndListMode endListBehavior;
     readonly public List<GameObject> currentItem;
-    public GameObject[] outputSubsetObjectLists;
-
     private int currentIndex;
 
     //[HideInInspector]
@@ -55,32 +55,25 @@ public class LM_PermutedList : ExperimentTask
             FisherYatesShuffle(permutedList);
         }
 
+        if (link)
+        {
+            permutedList = SortForLinking(permutedList);
+            Debug.Log("Linked list contains " + permutedList.Count + "sets");
+        }
+
         for (int i = 0; i < subset; i++)
         {
-            GameObject thing;
-            ObjectList ol;
-            if (outputSubsetObjectLists[i] != null)
-            {
-                thing = outputSubsetObjectLists[i].gameObject;
-                ol = thing.GetComponent<ObjectList>();
-            }
-            else
-            {
-                thing = new GameObject();
-                Debug.Log("No output destination found; creating a temporary ObjectList");
-                thing.AddComponent<ObjectList>();
-                thing = Instantiate(thing, transform);
-                thing.name = this.name + "_subset" + i;
-                ol = thing.GetComponent<ObjectList>();
-            }
-
+            var ol = new GameObject();
+            
+            ol.AddComponent<ObjectList>();
+            var thing = Instantiate(ol, transform);
+            thing.name = this.name + "_subset" + i;
 
             foreach (var entry in permutedList)
             {
-                ol.objects.Add(entry[i]);
+                thing.GetComponent<ObjectList>().objects.Add(entry[i]);
             }
-
-            if (outputSubsetObjectLists[i] == null) Destroy(thing);
+            Destroy(ol);
         }
     }
 
@@ -212,6 +205,53 @@ public class LM_PermutedList : ExperimentTask
             list[k] = list[n];
             list[n] = value;
         }
+    }
+
+public static List<List<GameObject>> SortForLinking(List<List<GameObject>> sacredList)
+    {
+        
+        var outList = new List<List<GameObject>>(); ;
+        do
+        {
+            try
+            {
+                outList.Clear();
+                linked = true;
+                var unsortedList = sacredList;
+                
+
+                int r = unsortedList[0].Count; // How many samples per permutation?
+                GameObject lastEnd = null;
+
+                while (unsortedList.Count > 0)
+                {
+                    var iItem = 0;
+                    var thisStart = unsortedList[iItem][0];
+                    if (lastEnd != null)
+                    {
+                        while (thisStart.name != lastEnd.name)
+                        {
+                            iItem++;
+                            thisStart = unsortedList[iItem][0];
+                        }
+                    }
+
+                    // Remember where we ended
+                    lastEnd = unsortedList[iItem][r - 1];
+                    outList.Add(unsortedList[iItem]);
+                    Debug.Log(unsortedList[iItem][0].name + "----------------->" + unsortedList[iItem][r - 1].name);
+                    unsortedList.Remove(unsortedList[iItem]);
+                }
+            }
+            catch (System.Exception)
+            {
+                linked = false;
+                Debug.LogWarning("Hit dead end; re linking permuted list");
+               
+            }
+        } while (!linked);
+        Debug.LogWarning("OutList Contains " + outList.Count);
+        return outList;
     }
 
 
