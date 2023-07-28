@@ -772,8 +772,8 @@ public class Experiment : MonoBehaviour
             if (usingVR)
             {
                 // Use steam functions to avoid issues w/ framerate drop
-
                 SteamVR_LoadLevel.Begin(config.levelNames[config.levelNumber]);
+                
                 Destroy(transform.parent.gameObject);
                 Debug.Log("Loading new VR scene");
             }
