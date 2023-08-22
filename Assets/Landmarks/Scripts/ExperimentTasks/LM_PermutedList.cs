@@ -21,7 +21,7 @@ using System.Linq;
 public class LM_PermutedList : ExperimentTask
 {
     [Header("Task-specific Properties")]
-    public ObjectList listToPermute;
+    public ObjectList[] listToPermute;
     public int subset = 3;
     public bool shuffle = true;
     [Tooltip("Sort such that the last item of n-1 is the first item of n")] public bool link = false;
@@ -45,9 +45,30 @@ public class LM_PermutedList : ExperimentTask
         if (!manager) Start();
         base.startTask();
 
+        // Deal with the kind of list we are using
+        if (listToPermute.Length == 1)
+        {
+            // Generate permutations
+            permutedList = Permute(listToPermute[0].objects, subset).ToList();
+            
+        }
+        else if (listToPermute.Length > 1)
+        {
+            permutedList.Clear();
+            subset = listToPermute.Length;
+            for (int i = 0; i < listToPermute.Length; i++)
+            {
+                List<GameObject> tmplist = new List<GameObject>();
+                foreach (var subitem in listToPermute[i].objects)
+                {
+                    tmplist.Add(subitem);
+                }
+                permutedList.Add(tmplist);
+            }
+            
+        }
+        Debug.Log(permutedList.Count.ToString() + "Non-independent lists were generated");
 
-        // Generate permutations
-        permutedList = Permute(listToPermute.objects, subset).ToList();
 
         // Shuffle if necessary
         if (shuffle)
