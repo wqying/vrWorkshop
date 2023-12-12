@@ -30,14 +30,43 @@ public class ObjectList : ExperimentTask {
 	public List<GameObject> objects;
 	public EndListMode EndListBehavior; 
 	public bool shuffle;
+	public List<ObjectList> ignoreCurrentFromOtherLists = new List<ObjectList>();
     // public GameObject order; // DEPRICATED
 
     
 	public override void startTask () {
         //ViewObject.startObjects.current = 0;
         //current = 0;
+        
+		// DEPRECATED
+		// if (order ) {
+		// 	// Deal with specific ordering
+		// 	ObjectOrder ordered = order.GetComponent("ObjectOrder") as ObjectOrder;
+		
+		// 	if (ordered) {
+		// 		Debug.Log("ordered");
+		// 		Debug.Log(ordered.order.Count);
+				
+		// 		if (ordered.order.Count > 0) {
+		// 			objs = ordered.order.ToArray();
+		// 		}
+		// 	}
+		// }
+		
+		TASK_START();
+	 
+	}	
+	
+	public override void TASK_ADD(GameObject go, string txt) {
+		objects.Add(go);
+	}
+	
+	public override void TASK_START()
+	{
+		base.startTask();		
+		if (!manager) Start();
 
-		GameObject[] objs;
+        GameObject[] objs;
 
         if (objects.Count == 0)
         {
@@ -53,58 +82,43 @@ public class ObjectList : ExperimentTask {
 
             Array.Sort(objs);
 
-			for (int i = 0; i < parentObject.transform.childCount; i++)
-			{
-				objs[i] = parentObject.transform.GetChild(i).gameObject;
-			}
+            for (int i = 0; i < parentObject.transform.childCount; i++)
+            {
+                objs[i] = parentObject.transform.GetChild(i).gameObject;
+            }
         }
-		else 
-		{
-			objs = new GameObject[objects.Count];
-			for (int i = 0; i < objects.Count; i++)
-			{
-				objs[i] = objects[i];
-			}
-		}
-        
-		// DEPRICATED
-		// if (order ) {
-		// 	// Deal with specific ordering
-		// 	ObjectOrder ordered = order.GetComponent("ObjectOrder") as ObjectOrder;
-		
-		// 	if (ordered) {
-		// 		Debug.Log("ordered");
-		// 		Debug.Log(ordered.order.Count);
-				
-		// 		if (ordered.order.Count > 0) {
-		// 			objs = ordered.order.ToArray();
-		// 		}
-		// 	}
-		// }
-			
-		if ( shuffle ) {
-			Experiment.Shuffle(objs);				
-		}
-		
-		TASK_START();
-	 
-		foreach (GameObject obj in objs) {	             
-        	objects.Add(obj);
-			log.log("TASK_ADD	" + name  + "\t" + this.GetType().Name + "\t" + obj.name  + "\t" + "null",1 );
-		}
-	}	
-	
-	public override void TASK_ADD(GameObject go, string txt) {
-		objects.Add(go);
-	}
-	
-	public override void TASK_START()
-	{
-		base.startTask();		
-		if (!manager) Start();
+        else
+        {
+            objs = new GameObject[objects.Count];
+            for (int i = 0; i < objects.Count; i++)
+            {
+                objs[i] = objects[i];
+            }
+        }
 
-		objects = new List<GameObject>();
-	}
+        if (shuffle)
+        {
+            Experiment.Shuffle(objs);
+        }
+
+
+		// Initialize and populate the objects in our ObjectList
+        objects = new List<GameObject>();
+
+        foreach (GameObject obj in objs)
+        {
+			// Check any other ObjectLists provided and don't add the current object from those lists
+			if (ignoreCurrentFromOtherLists.Count > 0) foreach (var ol in ignoreCurrentFromOtherLists)
+				{
+					if (ol.currentObject() == obj) continue;
+					else objects.Add(obj);
+				}
+			else objects.Add(obj);
+
+			foreach (var o in objects) log.log("TASK_ADD\t" + name + "\t" + this.GetType().Name + "\t" + o.name + "\t" + "null", 1);
+			
+        }
+    }
 	
 	public override bool updateTask () {
 	    return true;
