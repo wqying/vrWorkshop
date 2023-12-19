@@ -83,19 +83,7 @@ public class TaskList : ExperimentTask
                 break;
             case Role.task:
                 gameObject.AddComponent<LM_TaskLog>();
-                foreach (var list in GetComponentsInChildren<TaskList>())
-                {
-                    if (list == this) continue;
-
-                    if (list.taskListType == Role.trial)
-                    {
-                        Debug.Log(list.name);
-                        foreach (var expTask in list.GetComponentsInChildren<ExperimentTask>())
-                        {
-                            expTask.taskLog = GetComponent<LM_TaskLog>();
-                        }
-                    }
-                }
+                FindTrialList(this);
                 break;
             case Role.trial:
                 break;
@@ -361,4 +349,22 @@ public class TaskList : ExperimentTask
         return string.Format(str, names);
     }
 
+    public TaskList FindTrialList(TaskList list)
+    {
+        TaskList trialList = null;
+        foreach (var sublist in GetComponentsInChildren<TaskList>())
+        {
+            Debug.Log(sublist.name);
+            if (sublist.taskListType == Role.trial)
+            {
+                Debug.Log(sublist.name + "was detected as the trial list for task " + name);
+                trialList = sublist;
+                foreach (var expTask in sublist.GetComponentsInChildren<ExperimentTask>())
+                {
+                    expTask.taskLog = GetComponent<LM_TaskLog>();
+                }
+            }
+        }
+        return trialList;
+    }
 }

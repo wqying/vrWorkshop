@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18360132, g: 0.22910744, b: 0.30537397, a: 1}
+  m_IndirectSpecularColor: {r: 0.1836716, g: 0.22918393, b: 0.30547926, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3769,7 +3769,7 @@ MonoBehaviour:
   current: 0
   objects: []
   EndListBehavior: 1
-  shuffle: 1
+  shuffle: 0
   ignoreCurrentFromOtherLists: []
 --- !u!1001 &1112068932
 PrefabInstance:
@@ -7644,7 +7644,7 @@ MonoBehaviour:
   current: 0
   objects: []
   EndListBehavior: 1
-  shuffle: 1
+  shuffle: 0
   ignoreCurrentFromOtherLists:
   - {fileID: 1058652019}
 --- !u!1001 &1463660784
@@ -8455,8 +8455,9 @@ MonoBehaviour:
   triggerLabel: 
   triggerOnStart: 0
   triggerOnEnd: 0
-  prompt_text: Point to the {0}.
+  prompt_text: You are facing the {0}; point to the {1}.
   prompt_elements:
+  - {fileID: 1058652019}
   - {fileID: 1463648484}
 --- !u!4 &1691647575 stripped
 Transform:
@@ -11126,7 +11127,7 @@ MonoBehaviour:
   tasks: []
   objectsList: []
   repeat: 1
-  overideRepeat: {fileID: 0}
+  overideRepeat: {fileID: 1058652019}
   repeatCount: 1
   currentTask: {fileID: 0}
   catchTrialCount: 0
@@ -11148,7 +11149,7 @@ GameObject:
   - component: {fileID: 463608896648661805}
   - component: {fileID: 3990374597195476831}
   m_Layer: 0
-  m_Name: ForEachSite
+  m_Name: Pointing Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11165,7 +11166,7 @@ GameObject:
   - component: {fileID: 1971412122306413717}
   - component: {fileID: 3962628425335257938}
   m_Layer: 0
-  m_Name: Task Trials
+  m_Name: Pointing Trial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

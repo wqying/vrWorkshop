@@ -78,6 +78,7 @@ public class GenericPointing : ExperimentTask
 
         // WRITE TASK EXIT CODE HERE
         Debug.Log("Done!");
+        taskLog.LogTrial();
 
     }
 
