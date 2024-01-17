@@ -2253,7 +2253,7 @@ MonoBehaviour:
   triggerLabel: 
   triggerOnStart: 0
   triggerOnEnd: 0
-  taskListType: 1
+  taskListType: 0
   skipConditions: []
   tasks: []
   objectsList: []
@@ -11122,7 +11122,7 @@ MonoBehaviour:
   triggerLabel: 
   triggerOnStart: 0
   triggerOnEnd: 0
-  taskListType: 0
+  taskListType: 1
   skipConditions: []
   tasks: []
   objectsList: []
