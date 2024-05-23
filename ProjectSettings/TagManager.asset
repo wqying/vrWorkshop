@@ -17,6 +17,9 @@ TagManager:
   - Error
   - Target
   - Task
+  - projectile
+  - FxTemporaire
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -32,7 +35,7 @@ TagManager:
   - Targets
   - Avatar
   - HUD only
-  - 
+  - Ground
   - 
   - 
   - 
